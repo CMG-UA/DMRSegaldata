@@ -1,3 +1,4 @@
 export(getExampleBeta)
 export(getExamplePheno)
+export(getArrayType)
 export(listDMRSegalDataFiles)
