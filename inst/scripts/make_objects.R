@@ -1,0 +1,5 @@
+dir.create("../../data", showWarnings = FALSE)
+beta <- as.matrix(read.csv("../extdata/beta.tsv.gz", row.names = 1, header = TRUE, sep = "\t"))
+save(beta, file = "../../data/beta.rda", compress = "xz")
+pheno <- read.csv("../extdata/pheno.tsv", row.names = 1, header = TRUE, sep = "\t")
+save(pheno, file = "../../data/pheno.rda", compress = "xz")

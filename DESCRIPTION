@@ -14,12 +14,12 @@ Description: Data package providing example DNA methylation files used in
     and preprocessing has already been performed on the beta values.
 License: GPL (>= 2)
 Encoding: UTF-8
-LazyData: false
 URL: https://github.com/CMG-UA/DMRSegal
 BugReports: https://github.com/CMG-UA/DMRSegal/issues
 biocViews: ExperimentData, Homo_sapiens_Data, DNAMethylation, MethylationArrayData, IlluminaHumanMethylation450k
 Depends:
     R (>= 4.3.0)
+LazyData: yes
 Suggests:
     DMRSegal
 NeedsCompilation: no
