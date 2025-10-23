@@ -1,6 +1,6 @@
-Package: DMRSegaldata
+Package: DMRsegaldata
 Type: Package
-Title: Example DNAm Data for DMRSegal
+Title: Example DNAm Data for DMRsegal
 Version: 0.99.0
 Authors@R: c(
     person(given = "Vasileios", family = "Lemonidis", role = c("aut", "cre"),
@@ -8,18 +8,18 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-6446-3536"))
  )
 Description: Data package providing example DNA methylation files used in
-    the DMRSegal vignette and examples. Includes a sorted beta matrix
+    the DMRsegal vignette and examples. Includes a sorted beta matrix
     as a tab-delimited, bgzip-compressed file and a matching phenotype table. 
     The data contains 10 healthy and 10 cancer samples, 
     and preprocessing has already been performed on the beta values.
 License: GPL (>= 2)
 Encoding: UTF-8
-URL: https://github.com/CMG-UA/DMRSegal
-BugReports: https://github.com/CMG-UA/DMRSegal/issues
+URL: https://github.com/CMG-UA/DMRsegal
+BugReports: https://github.com/CMG-UA/DMRsegal/issues
 biocViews: ExperimentData, Homo_sapiens_Data, DNAMethylation, MethylationArrayData, IlluminaHumanMethylation450k
 Depends:
     R (>= 4.3.0)
 LazyData: yes
 Suggests:
-    DMRSegal
+    DMRsegal
 NeedsCompilation: no
