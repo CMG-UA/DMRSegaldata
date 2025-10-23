@@ -20,6 +20,8 @@ biocViews: ExperimentData, Homo_sapiens_Data, DNAMethylation, MethylationArrayDa
 Depends:
     R (>= 4.3.0)
 LazyData: yes
+LazyDataCompression: xz
 Suggests:
     DMRsegal
 NeedsCompilation: no
+RoxygenNote: 7.3.3

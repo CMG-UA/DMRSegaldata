@@ -41,3 +41,6 @@ dmps$pval_adj <- p.adjust(dmps$pval, method = "BH")
 dmps <- dmps[dmps$pval_adj < 0.05, ]
 
 save(dmps, file = "../../data/dmps.rda", compress = "xz")
+
+array_type <- "450K"
+save(array_type, file = "../../data/array_type.rda", compress = "xz")
