@@ -2,9 +2,9 @@ dir.create("../../data", showWarnings = FALSE)
 # download beta from https://zenodo.org/records/17475298/files/beta.tsv.gz?download=1
 download.file("https://zenodo.org/records/17475298/files/beta.tsv.gz?download=1", "../../data/beta.tsv.gz")
 beta <- as.matrix(read.csv("../../data/beta.tsv.gz", row.names = 1, header = TRUE, sep = "\t"))
-# download pheno from https://zenodo.org/records/17475298/files/pheno.tsv.gz?download=1
-download.file("https://zenodo.org/records/17475298/files/pheno.tsv.gz?download=1", "../../data/pheno.tsv.gz")
-pheno <- read.csv("../../data/pheno.tsv.gz", row.names = 1, header = TRUE, sep = "\t")
+# download pheno from https://zenodo.org/records/17475298/files/pheno.tsv?download=1
+download.file("https://zenodo.org/records/17475298/files/pheno.tsv?download=1", "../../data/pheno.tsv")
+pheno <- read.csv("../../data/pheno.tsv", row.names = 1, header = TRUE, sep = "\t")
 
 save(beta, file = "../../data/beta.rda", compress = "xz")
 save(pheno, file = "../../data/pheno.rda", compress = "xz")

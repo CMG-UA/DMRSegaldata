@@ -20,13 +20,58 @@ A data frame containing differentially methylated positions (CpG sites) identifi
 }
 \details{
 The DMPs were identified using limma's empirical Bayes moderated t-statistics on M-values (log2 ratio of methylated to unmethylated signal). Only CpG sites with adjusted p-value (Benjamini-Hochberg) < 0.05 are included. The results are sorted by p-value.
+
+\subsection{Analysis Details}{
+The differential methylation analysis included:
+\itemize{
+  \item Conversion of beta values to M-values for statistical testing
+  \item Linear modeling with adjustment for age and gender covariates
+  \item Empirical Bayes moderation of t-statistics (limma)
+  \item Multiple testing correction using Benjamini-Hochberg method
+  \item Filtering at FDR < 0.05
+}
+}
+}
+\section{Accessing the Data}{
+This resource can be accessed via ExperimentHub:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+library(ExperimentHub)
+eh <- ExperimentHub()
+
+# Query and load
+myfiles <- query(eh, "DMRsegaldata")
+dmps <- myfiles[["EH####"]]  # Replace #### with actual EH ID
+
+# Or use helper function
+dmps <- ExperimentHub::loadResource(eh, "DMRsegaldata", "dmps.rda")
+}\if{html}{\out{</div>}}
+
+Alternatively, for local/development use:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{
+data(dmps)
+}\if{html}{\out{</div>}}
 }
 \source{
 Derived from the beta matrix and pheno data using limma differential methylation analysis.
 }
 \examples{
+\dontrun{
+# Via ExperimentHub
+library(ExperimentHub)
+eh <- ExperimentHub()
+dmps <- ExperimentHub::loadResource(eh, "DMRsegaldata", "dmps.rda")
+}
+
+# Via LazyData
 data(dmps)
 head(dmps)
 nrow(dmps)
+
+# Summary of significance
+summary(dmps$pval_adj)
+sum(dmps$pval_adj < 0.01)  # Very significant DMPs
+sum(dmps$pval_adj < 0.001) # Highly significant DMPs
 }
 \keyword{datasets}
