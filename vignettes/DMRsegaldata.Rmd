@@ -77,7 +77,7 @@ Beta values range from 0 to 1, representing the proportion of methylation at eac
 
 The `pheno` object contains sample metadata including group assignment, age, and gender:
 
-```{r pheno-data eval=FALSE}
+```{r pheno-data}
 # Load phenotype data
 data(pheno)
 
