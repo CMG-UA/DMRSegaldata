@@ -16,10 +16,10 @@ pheno_and_covs <- cbind(list(x = pheno), covs)
 design <- model.matrix(~., data = pheno_and_covs)
 suppressWarnings(suppressMessages({
     sink("/dev/null")
-    not.collinear <- apply(!is.na(coef(limma::lmFit(mvalues, design))), 2, all)
+    not_collinear <- apply(!is.na(coef(limma::lmFit(mvalues, design))), 2, all)
     sink()
 }))
-design <- design[, not.collinear]
+design <- design[, not_collinear]
 
 fit <- limma::lmFit(mvalues, design)
 fit <- limma::eBayes(fit)
@@ -36,7 +36,7 @@ rownames(tab) <- rownames(anova.res)
 p0 <- siggenes::pi0.est(tab$pval[!is.na(tab$pval)])$p0
 tab$qval <- siggenes::qvalue.cal(tab$pval, p0)
 o <- order(tab$pval)
-dmps <- tab[o, , drop = F]
+dmps <- tab[o, , drop = FALSE]
 dmps$pval_adj <- p.adjust(dmps$pval, method = "BH")
 dmps <- dmps[dmps$pval_adj < 0.05, ]
 

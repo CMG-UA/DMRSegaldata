@@ -1,0 +1,256 @@
+---
+title: "Introduction to DMRsegaldata"
+author: "Vasileios Lemonidis"
+date: "`r Sys.Date()`"
+output: 
+  BiocStyle::html_document:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteIndexEntry{Introduction to DMRsegaldata}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>",
+    fig.width = 7,
+    fig.height = 5
+)
+```
+
+# Overview
+
+The `DMRsegaldata` package provides example DNA methylation data for use with the `DMRsegal` package. This data package contains preprocessed methylation beta values from Illumina HumanMethylation450K arrays, along with associated phenotype information, differentially methylated positions (DMPs), and array type metadata.
+
+The data consists of:
+
+- **10 cancer samples** (T1-T10)
+- **10 normal/healthy samples** (H1-H10)
+
+All data has been preprocessed and quality controlled, making it ready for downstream analysis with DMRsegal or other methylation analysis tools.
+
+# Installation
+
+```{r eval=FALSE}
+# Install from Bioconductor (once submitted)
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+BiocManager::install("DMRsegaldata")
+```
+
+# Loading the Package
+
+```{r load-package}
+library(DMRsegaldata)
+```
+
+# Data Objects
+
+The package provides four main data objects:
+
+## Beta Values Matrix
+
+The `beta` object contains DNA methylation beta values for CpG sites across all samples:
+
+```{r beta-data}
+# Load the beta values matrix
+data(beta)
+
+# Examine the structure
+dim(beta)
+class(beta)
+
+# Preview the first few rows and columns
+beta[1:5, 1:5]
+
+# Summary statistics
+summary(beta[1:100, 1])
+```
+
+Beta values range from 0 to 1, representing the proportion of methylation at each CpG site.
+
+## Phenotype Data
+
+The `pheno` object contains sample metadata including group assignment, age, and gender:
+
+```{r pheno-data}
+# Load phenotype data
+data(pheno)
+
+# View the structure
+str(pheno)
+head(pheno)
+
+# Summary of sample groups
+table(pheno$Sample_Group)
+
+# Summary of gender distribution
+table(pheno$Gender)
+table(pheno$Sample_Group, pheno$Gender)
+
+# Age distribution
+summary(pheno$Age)
+```
+
+## Differentially Methylated Positions (DMPs)
+
+The `dmps` object contains pre-calculated differentially methylated positions identified using limma:
+
+```{r dmps-data}
+# Load DMP results
+data(dmps)
+
+# Examine the structure
+head(dmps)
+dim(dmps)
+
+# Summary of significance levels
+summary(dmps$pval)
+summary(dmps$pval_adj)
+
+# Top 10 most significant DMPs
+head(dmps, 10)
+
+# Count of significant DMPs at different thresholds
+sum(dmps$pval_adj < 0.05)
+sum(dmps$pval_adj < 0.01)
+sum(dmps$pval_adj < 0.001)
+```
+
+## Array Type
+
+The `array_type` object specifies the Illumina array platform used:
+
+```{r array-type}
+# Load array type information
+data(array_type)
+array_type
+```
+
+# Example Analysis Workflow
+
+## Basic Data Exploration
+
+Here's a simple workflow to explore the methylation data:
+
+```{r exploration}
+# Check sample consistency between beta and pheno
+all(colnames(beta) == rownames(pheno))
+
+# Calculate mean methylation per sample
+mean_methylation <- colMeans(beta, na.rm = TRUE)
+names(mean_methylation) <- colnames(beta)
+
+# Compare mean methylation between groups
+cancer_samples <- rownames(pheno)[pheno$Sample_Group == "cancer"]
+normal_samples <- rownames(pheno)[pheno$Sample_Group == "normal"]
+
+mean_cancer <- mean(mean_methylation[cancer_samples])
+mean_normal <- mean(mean_methylation[normal_samples])
+
+cat("Mean methylation in cancer samples:", round(mean_cancer, 4), "\n")
+cat("Mean methylation in normal samples:", round(mean_normal, 4), "\n")
+```
+
+## Visualizing Methylation Differences
+
+```{r visualization, fig.cap="Distribution of mean methylation by sample group"}
+# Create a data frame for plotting
+plot_data <- data.frame(
+    Sample = colnames(beta),
+    MeanMethylation = mean_methylation,
+    Group = pheno[colnames(beta), "Sample_Group"],
+    Age = pheno[colnames(beta), "Age"],
+    Gender = pheno[colnames(beta), "Gender"]
+)
+
+# Boxplot comparing groups
+boxplot(MeanMethylation ~ Group,
+    data = plot_data,
+    main = "Mean Methylation by Sample Group",
+    xlab = "Sample Group", ylab = "Mean Beta Value",
+    col = c("cancer" = "lightcoral", "normal" = "lightblue")
+)
+
+# Add individual points
+stripchart(MeanMethylation ~ Group,
+    data = plot_data,
+    vertical = TRUE, method = "jitter",
+    add = TRUE, pch = 19, col = "black"
+)
+```
+
+## Examining Top DMPs
+
+Let's look at the methylation levels of the most significant DMPs:
+
+```{r top-dmps, fig.cap="Methylation levels at top 3 DMPs"}
+# Get top 3 DMPs
+top_dmps <- head(rownames(dmps), 3)
+
+# Set up plotting area
+par(mfrow = c(1, 3))
+
+# Plot each DMP
+for (cpg in top_dmps) {
+    if (cpg %in% rownames(beta)) {
+        cpg_values <- beta[cpg, ]
+        boxplot(cpg_values ~ pheno$Sample_Group,
+            main = cpg,
+            xlab = "Group", ylab = "Beta Value",
+            col = c("lightcoral", "lightblue")
+        )
+        stripchart(cpg_values ~ pheno$Sample_Group,
+            vertical = TRUE, method = "jitter",
+            add = TRUE, pch = 19, col = "black"
+        )
+    }
+}
+
+par(mfrow = c(1, 1))
+```
+
+## Volcano Plot of DMPs
+
+```{r volcano-plot, fig.cap="Volcano plot of differentially methylated positions"}
+# Calculate effect sizes for DMPs
+# (mean difference between cancer and normal)
+calculate_delta_beta <- function(cpg) {
+    if (cpg %in% rownames(beta)) {
+        cancer_mean <- mean(beta[cpg, cancer_samples], na.rm = TRUE)
+        normal_mean <- mean(beta[cpg, normal_samples], na.rm = TRUE)
+        return(cancer_mean - normal_mean)
+    }
+    NA
+}
+
+delta_beta <- sapply(rownames(dmps), calculate_delta_beta)
+dmps$delta_beta <- delta_beta
+# show only a subset
+dmps_subset <- dmps[sample(rownames(dmps), min(1000, nrow(dmps))), ]
+
+# Create volcano plot
+plot(dmps_subset$delta_beta, -log10(dmps_subset$pval),
+    xlab = "Delta Beta (Cancer - Normal)",
+    ylab = "-log10(p-value)",
+    main = "Volcano Plot of DMPs",
+    pch = 19, col = ifelse(dmps_subset$pval_adj < 0.01 && abs(dmps_subset$delta_beta) > 0.2, "red", "grey50"),
+    cex = 0.5
+)
+abline(h = -log10(0.05), lty = 2, col = "blue")
+abline(v = c(-0.2, 0.2), lty = 2, col = "blue")
+legend("topright",
+    legend = c("FDR < 0.01", "Not significant"),
+    col = c("red", "grey50"), pch = 19
+)
+```
+
+# Session Information
+
+```{r session-info}
+sessionInfo()
+```
