@@ -219,26 +219,21 @@ par(mfrow = c(1, 1))
 ```{r volcano-plot, fig.cap="Volcano plot of differentially methylated positions"}
 # Calculate effect sizes for DMPs
 # (mean difference between cancer and normal)
-calculate_delta_beta <- function(cpg) {
-    if (cpg %in% rownames(beta)) {
-        cancer_mean <- mean(beta[cpg, cancer_samples], na.rm = TRUE)
-        normal_mean <- mean(beta[cpg, normal_samples], na.rm = TRUE)
-        return(cancer_mean - normal_mean)
-    }
-    NA
-}
 
-delta_beta <- sapply(rownames(dmps), calculate_delta_beta)
-dmps$delta_beta <- delta_beta
 # show only a subset
-dmps_subset <- dmps[sample(rownames(dmps), min(1000, nrow(dmps))), ]
+dmps_subset <- dmps[sample(rownames(dmps), min(1000, nrow(dmps))), , drop = FALSE]
+cancer_beta <- beta[rownames(dmps_subset), cancer_samples]
+normal_beta <- beta[rownames(dmps_subset), normal_samples]
+cancer_beta_means <- rowMeans(cancer_beta, na.rm = TRUE)
+normal_beta_means <- rowMeans(normal_beta, na.rm = TRUE)
+dmps_subset$delta_beta <- cancer_beta_means - normal_beta_means
 
 # Create volcano plot
 plot(dmps_subset$delta_beta, -log10(dmps_subset$pval),
     xlab = "Delta Beta (Cancer - Normal)",
     ylab = "-log10(p-value)",
     main = "Volcano Plot of DMPs",
-    pch = 19, col = ifelse(dmps_subset$pval_adj < 0.01 && abs(dmps_subset$delta_beta) > 0.2, "red", "grey50"),
+    pch = 19, col = ifelse(dmps_subset$pval_adj < 0.01 & abs(dmps_subset$delta_beta) > 0.2, "red", "grey50"),
     cex = 0.5
 )
 abline(h = -log10(0.05), lty = 2, col = "blue")
