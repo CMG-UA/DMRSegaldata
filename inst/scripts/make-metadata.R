@@ -26,14 +26,20 @@ metadata <- data.frame(
   Genome = c("hg19", "hg19", "hg19", "hg19"),
   
   ## SourceType: Format of original data (e.g., FASTA, BAM, BigWig, etc.)
-  SourceType = c("TSV", "TSV", "RDA", "TXT"),
-  
-  ## SourceUrl: URL of original data source
+  SourceType = c("RDA", "RDA", "RDA", "RDA"),
+
   SourceUrl = c(
-    "https://github.com/CMG-UA/DMRsegaldata",
-    "https://github.com/CMG-UA/DMRsegaldata",
-    "https://github.com/CMG-UA/DMRsegaldata",
-    "https://github.com/CMG-UA/DMRsegaldata"
+    "https://zenodo.org/records/17475298/files/beta.rda",
+    "https://zenodo.org/records/17475298/files/pheno.rda",
+    "https://zenodo.org/records/17475298/files/dmps.rda",
+    "https://zenodo.org/records/17475298/files/array_type.rda"
+  ),
+
+  RDataPath = c(
+    "DMRsegaldata/beta.rda",
+    "DMRsegaldata/pheno.rda",
+    "DMRsegaldata/dmps.rda",
+    "DMRsegaldata/array_type.rda"
   ),
   
   ## SourceVersion: Version or date of source data
@@ -44,10 +50,9 @@ metadata <- data.frame(
   
   ## TaxonomyId: NCBI taxonomy ID
   TaxonomyId = c(9606, 9606, 9606, 9606),
-  
-  ## Coordinate_1_based: TRUE/FALSE - are coordinates 1-based or 0-based
-  Coordinate_1_based = c(TRUE, NA, TRUE, NA),
-  
+
+  Coordinate_1_based = c("TRUE", "NA", "TRUE", "NA"),
+
   ## DataProvider: Name of entity providing the data
   DataProvider = c(
     "Center for Oncological Research, University of Antwerp",
@@ -70,13 +75,7 @@ metadata <- data.frame(
   ## DispatchClass: How to load data (e.g., Rda, H5File, FilePath)
   DispatchClass = c("Rda", "Rda", "Rda", "Rda"),
   
-  ## RDataPath: Path to resource in ExperimentHub (will be filled by Bioconductor)
-  RDataPath = c(
-    "DMRsegaldata/beta.rda",
-    "DMRsegaldata/pheno.rda",
-    "DMRsegaldata/dmps.rda",
-    "DMRsegaldata/array_type.rda"
-  ),
+
   
   ## Tags: Searchable tags for the resource
   Tags = c(

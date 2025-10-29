@@ -1,7 +1,12 @@
 dir.create("../../data", showWarnings = FALSE)
-beta <- as.matrix(read.csv("../extdata/beta.tsv.gz", row.names = 1, header = TRUE, sep = "\t"))
+# download beta from https://zenodo.org/records/17475298/files/beta.tsv.gz?download=1
+download.file("https://zenodo.org/records/17475298/files/beta.tsv.gz?download=1", "../../data/beta.tsv.gz")
+beta <- as.matrix(read.csv("../../data/beta.tsv.gz", row.names = 1, header = TRUE, sep = "\t"))
+# download pheno from https://zenodo.org/records/17475298/files/pheno.tsv.gz?download=1
+download.file("https://zenodo.org/records/17475298/files/pheno.tsv.gz?download=1", "../../data/pheno.tsv.gz")
+pheno <- read.csv("../../data/pheno.tsv.gz", row.names = 1, header = TRUE, sep = "\t")
+
 save(beta, file = "../../data/beta.rda", compress = "xz")
-pheno <- read.csv("../extdata/pheno.tsv", row.names = 1, header = TRUE, sep = "\t")
 save(pheno, file = "../../data/pheno.rda", compress = "xz")
 if (!requireNamespace("limma", quietly = TRUE)) {
     if (!requireNamespace("BiocManager", quietly = TRUE)) {
