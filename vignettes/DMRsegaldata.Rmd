@@ -239,7 +239,7 @@ plot(dmps_subset$delta_beta, -log10(dmps_subset$pval),
 abline(h = -log10(0.05), lty = 2, col = "blue")
 abline(v = c(-0.2, 0.2), lty = 2, col = "blue")
 legend("topright",
-    legend = c("FDR < 0.01", "Not significant"),
+    legend = c("FDR < 0.01 && abs(Delta Beta) > 0.2", "Not significant"),
     col = c("red", "grey50"), pch = 19
 )
 ```
